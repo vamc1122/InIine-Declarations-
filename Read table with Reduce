@@ -1,0 +1,55 @@
+
+new : 1
+DATA(matched_record) = REDUCE ty_wbsegbkpf(
+  INIT result = VALUE ty_wbsegbkpf( )
+  FOR wa IN it_wbsegbkpf
+  NEXT result = COND #(
+    WHEN wa-gjahr = wa_finalref-gjahr AND
+         wa-bldat = wa_finalref-doc_date AND
+         wa-bschl = wa_finalref-post_key AND
+         wa-lifnr = wa_finalref-lifnr AND
+         wa-bukrs = wa_finalref-bukrs AND
+         wa-waers = wa_finalref-curr AND
+         lv_dmbtr = wa-dmbtr + wa-qbshb
+    THEN wa
+    ELSE result ) ).
+
+new : 2
+********For internal table in where condition 
+    wa_konp = REDUCE ty_konp(
+                           INIT result = VALUE ty_konp( )
+                           FOR wa IN it_konp
+                           NEXT result = COND #(
+                           WHEN wa-valdt IS NOT INITIAL
+                           AND line_exists( lt_a017_sub[ knumh = wa-knumh ] )
+
+                           THEN wa
+        ELSE result ) ).
+
+
+Old : 
+            READ TABLE it_wbsegbkpf INTO wbsegbkpf WITH KEY       gjahr = wa_finalref-gjahr" reference
+                                                                bldat = wa_finalref-doc_date
+                                                                bschl = wa_finalref-post_key
+                                                                lifnr = wa_finalref-lifnr
+                                                                bukrs = wa_finalref-bukrs
+                                                                waers = wa_finalref-curr.
+
+          IF sy-subrc = 0 .
+
+*            LOOP AT it_wbsegbkpf INTO wbsegbkpf WHERE gjahr = wa_finalref-gjahr
+*                                                  AND bldat = wa_finalref-doc_date
+*                                                  AND bschl = wa_finalref-post_key
+*                                                  AND lifnr = wa_finalref-lifnr
+*                                                  AND bukrs = wa_finalref-bukrs
+*                                                  AND waers = wa_finalref-curr.
+*             IF ( lv_dmbtr = wbsegbkpf-dmbtr + wbsegbkpf-qbshb ).
+*            lv_amount = wbsegbkpf-dmbtr.
+*            CONCATENATE 'Document' wbsegbkpf-belnr 'already exists for given Vendor:' wbsegbkpf-lifnr
+*             'in fiscal year:' wbsegbkpf-gjahr  '& Amount' lv_amount INTO w_msg SEPARATED BY ' '.
+*            MESSAGE  w_msg TYPE 'I' DISPLAY LIKE 'W'.
+*            LEAVE LIST-PROCESSING.
+*             EXIT.
+*             ENDIF.
+
+*           ENDLOOP.
