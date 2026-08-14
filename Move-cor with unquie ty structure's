@@ -1,0 +1,22 @@
+  DATA:lt_colineitems TYPE STANDARD TABLE OF zfi_colineitems.
+
+TYPES : BEGIN OF ty_bsid,
+          bukrs     TYPE bukrs, konto TYPE kunnr, 
+  belnr TYPE bsid_view-belnr,
+  gjahr TYPE bsid_view-gjahr, 
+  budat TYPE bsid_view-budat,
+  shkzg TYPE bsid_view-shkzg,
+*  wrbtr TYPE bsid_view-wrbtr,
+  wrbtr TYPE ZDE_VEHICLE,
+          umskz     TYPE umskz, blart TYPE bsid_view-blart, vbeln TYPE bsid_view-vbeln,
+          prctr     TYPE bsid_view-prctr,
+          zcategory TYPE zfi_doctype-zcategory,
+          zduedate TYPE sy-datum,
+        END OF ty_bsid.
+
+DATA : lt_bsid TYPE TABLE OF ty_bsid.
+
+
+      lt_bsid = VALUE #( FOR <ls> IN lt_colineitems WHERE ( tot_vh IS NOT INITIAL )
+               ( CORRESPONDING #( <ls> ) )
+               ( wrbtr = cond #( WHEN <ls>-tot_vh < 1 THEN <ls>-tot_vh * -1 ELSE <ls>-tot_vh ) ) ).
