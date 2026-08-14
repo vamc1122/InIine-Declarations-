@@ -1,19 +1,3 @@
-SnipSave
-Dashboard
-SnipSave CLI
-Search Snippets
-Search Snippets
-Logout
-SnipSave is shutting down on August 31, 2026. Learn more
-
-
-vamsi mudunuri vamsimudunuri
-View user profile
-Show Line Numbers
-Wrap Text
-offset for select query
-ABAP
-Copy
 test case 1.
 TYPES: BEGIN OF ty_gen,
          idnt1 TYPE zxx_generic_data-idnt1,
@@ -65,11 +49,3 @@ test case 2.
         lt_bseg_temp = VALUE #( FOR field1 IN lt_bseg1 (
                                                     lv_belnr = field1-awkey+0(10) lv_gjahr =  field1-awkey+10(4) ) ) .
 
-X
-GitHub
-YouTube
-Discord
-LinkedIn
-© 2026 Wavex LLC. All rights reserved.
-
-vamsimudunuri's Dashboard | SnipSave
