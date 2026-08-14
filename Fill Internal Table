@@ -1,0 +1,7 @@
+  it_ucomm = VALUE #(
+  ( sign = 'I' option = 'EQ' low = 'BS' )
+                      ( sign = 'I' option = 'EQ' low = 'BU' )
+                      ( sign = 'I' option = 'EQ' low = 'BP' )
+                      ( sign = 'I' option = 'EQ' low = 'FIKP' )
+                      ( sign = 'I' option = 'EQ' low = 'PBBP' )
+                      ( sign = 'I' option = 'EQ' low = 'BL' ) ).
