@@ -1,0 +1,6 @@
+lv_dmbtr1 = REDUCE #( INIT lv_dmbtr = 0
+
+                                  FOR wa_ekbe IN it_ekbe WHERE ( bwart = lc_bwart_101 AND elikz = abap_true )
+
+                                  NEXT lv_dmbtr = lv_dmbtr + wa_ekbe-dmbtr ).
+ 
