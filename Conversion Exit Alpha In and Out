@@ -1,0 +1,2 @@
+
+DATA(lv_real) = |{ lv_kunnr ALPHA = IN/OUT } |.
