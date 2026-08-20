@@ -1,0 +1,195 @@
+loop at it_final into wa_final.
+
+continue "  if the condtion match it will go for next record in internal table 
+" The CONTINUE statement can only be used in loops. 
+"If it is used, the current loop pass is ended immediately and the program flow is continued with the next loop pass.
+
+endloop.
+
+
+
+Exit-
+
+Exit statement means coming out of a loop when ever certain conditon sastisfies and if use outside block it will exit prog
+
+do.
+
+count = count + 1.
+
+if count = '5'.
+
+EXIT.
+
+endif.
+
+enddo.
+
+" ''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''EXAMPLE. CONTINUE, EXIT & CHECK
+
+
+
+DO 4 TIMES.
+
+IF SY-INDEX = 2.
+
+CONTINUE.
+
+ENDIF.
+
+WRITE SY-INDEX.
+
+ENDDO.
+
+This produces the following output:
+
+1 3 4
+
+Here, the system terminates the second loop pass without processing the WRITE statement
+
+To terminate a loop pass conditionally, use the CHECK statement as follows:
+
+Syntax
+
+CHECK <condition>.
+
+DO 4 TIMES.
+
+CHECK SY-INDEX BETWEEN 2 and 3.
+
+WRITE SY-INDEX.
+
+ENDDO.
+
+This produces the following output:
+
+2 3
+
+Here, the system terminates the first and the fourth loop pass without processing the WRITE statement because SY-INDEX does not fall between 2 and 3.
+
+To terminate a loop entirely without any condition, use the EXIT statement as follows:
+
+Syntax
+
+EXIT.
+
+DO 4 TIMES.
+
+IF SY-INDEX = 3.
+
+EXIT.
+
+ENDIF.
+
+WRITE SY-INDEX.
+
+ENDDO.
+
+This produces the following output:
+
+1 2
+
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""DIFF B/W CHECK AND CONTINUE
+
+diff b/w  check and continue 
+
+CHECK is conditional.
+
+Check statement is like IF and EXIT combined. That is if check statement fails then it skips the programing code next..
+
+DO 4 TIMES.
+
+CHECK sy-index > 2.
+
+WRITE sy-index.
+
+ENDDO.
+
+output:3 4
+
+CONTINUE is non conditional.
+
+Continue statement is used inside the loops if we want to again start the loop with the same record thus there is no exit..
+
+DO 4 TIMES.
+
+IF not sy-index > 2.
+
+CONTINUE.
+
+ENDIF.
+
+WRITE sy-index.
+
+ENDDO.
+
+output:3 4
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""" STOP EXAMPLE 
+DATA:IT_MARATYPE TABLE OFMARA,
+WA_MARATYPEMARA.
+START-OF-SELECTION.
+SELECT*FROMMARAINTO TABLEIT_MARAUP TO50ROWS. 
+STOP.
+
+LOOP ATIT_MARAINTOWA_MARA. 
+WRITE:/ WA_MARA-MATNR,WA_MARA-MTART,WA_MARA-MATKL.
+ENDLOOP.
+
+Result: NO OUTPUT
+
+ 
+
+DATA:IT_MARATYPE TABLE OFMARA, 
+WA_MARATYPEMARA.
+START-OF-SELECTION. 
+
+SELECT*FROMMARAINTO TABLEIT_MARAUP TO50ROWS. 
+STOP. 
+
+END-OF-SELECTION.
+LOOP ATIT_MARAINTOWA_MARA.
+WRITE:/ WA_MARA-MATNR,WA_MARA-MTART,WA_MARA-MATKL. 
+ENDLOOP.
+ 
+Result: Display OUTPUT
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""RETURN
+
+
+DATA:IT_MARATYPE TABLE OFMARA,
+WA_MARATYPEMARA.
+START-OF-SELECTION.
+
+SELECT*FROMMARAINTO TABLEIT_MARAUP TO50ROWS.
+RETURN.
+
+END-OF-SELECTION. 
+
+LOOP ATIT_MARAINTOWA_MARA. 
+IF.
+WA_MARA-MTART='HALB'.
+ENDIF.
+WRITE:/ WA_MARA-MATNR,WA_MARA-MTART,WA_MARA-MATKL.
+ENDLOOP.
+
+RESULT: NO OUTPUT
+
+
+DATA:IT_MARATYPE TABLE OFMARA,
+     WA_MARA TYPE MARA.
+START-OF-SELECTION.
+
+SELECT*FROMMARAINTO TABLEIT_MARAUP TO50ROWS.
+END-OF-SELECTION. 
+LOOP ATIT_MARAINTOWA_MARA. 
+IFWA_MARA-MTART='HALB'.
+RETURN. 
+ENDIF.
+WRITE:/ WA_MARA-MATNR,WA_MARA-MTART,WA_MARA-MATKL.
+ENDLOOP.
+
+ RESULT: SOME RECORDS as program execution.
+         stops after ‘HALB’ material
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+ type.
