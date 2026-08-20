@@ -1,0 +1,197 @@
+SELECTION-SCREEN BEGIN OF BLOCK b1 WITH FRAME TITLE TEXT-001.
+  PARAMETERS     : p_rbukrs TYPE acdoca-rbukrs OBLIGATORY DEFAULT '1000'.
+  SELECT-OPTIONS : s_kunnr FOR acdoca-kunnr .
+  SELECT-OPTIONS : s_budat FOR acdoca-budat OBLIGATORY.
+*  SELECT-OPTIONS : s_period FOR acdoca-poper OBLIGATORY NO INTERVALS.
+  PARAMETERS : p_gjahr TYPE acdoca-gjahr  .
+  PARAMETERS :p_date TYPE acdoca-budat MODIF ID shu.
+SELECTION-SCREEN END OF BLOCK b1.
+
+SELECTION-SCREEN BEGIN OF BLOCK b2 WITH FRAME TITLE TEXT-002.
+
+*  PARAMETERS :p_test AS CHECKBOX  DEFAULT 'X'.
+*  PARAMETERS :p_disp RADIOBUTTON GROUP r1  DEFAULT 'X'.
+  PARAMETERS :p_test AS CHECKBOX DEFAULT 'X'.
+  PARAMETERS :p_tabupd  RADIOBUTTON GROUP r1.
+  PARAMETERS :p_post RADIOBUTTON GROUP r1.
+SELECTION-SCREEN END OF BLOCK b2.
+
+
+INITIALIZATION.
+
+at SELECTION-SCREEN .
+  p_date = s_budat-high.
+
+at SELECTION-SCREEN on s_budat.
+  IF s_budat-high IS INITIAL.
+    MESSAGE 'Please Enter The To Date' TYPE 'E'.
+  ENDIF.
+
+lv_date = s_budat-low.
+CALL FUNCTION 'FI_PERIOD_DETERMINE'
+  EXPORTING
+    i_budat              = lv_date
+   I_BUKRS              = '1000'
+ IMPORTING
+   E_GJAHR              = lv_year
+   E_MONAT              = lv_month
+   E_POPER              = lv_day .
+IF sy-subrc <> 0.
+* Implement suitable error handling here
+ENDIF.
+
+
+lv_date1 = s_budat-high.
+
+CALL FUNCTION 'FI_PERIOD_DETERMINE'
+  EXPORTING
+    i_budat              = lv_date1
+   I_BUKRS              = '1000'
+ IMPORTING
+   E_GJAHR              = lv_year1
+   E_MONAT              = lv_month1
+   E_POPER              = lv_day1 .
+IF sy-subrc <> 0.
+* Implement suitable error handling here
+ENDIF.
+
+if lv_month = lv_month1 and lv_year1 = lv_year.
+  else.
+    MESSAGE 'Please  Enter From and To Month and Year Should Be Same' TYPE 'E'.
+    ENDIF.
+
+AT SELECTION-SCREEN OUTPUT.
+LOOP AT SCREEN.
+IF screen-group1 = 'SHU'.
+screen-input = '0'.
+MODIFY SCREEN.
+ENDIF.
+ENDLOOP.
+
+
+
+
+
+SELECTION-SCREEN: BEGIN OF BLOCK a WITH FRAME TITLE TEXT-003.
+
+  PARAMETERS : p_create  RADIOBUTTON GROUP r1 USER-COMMAND airline DEFAULT 'X' .
+  PARAMETERS : p_cancel RADIOBUTTON GROUP r1 .
+
+SELECTION-SCREEN: END OF BLOCK a.
+
+SELECTION-SCREEN: BEGIN OF BLOCK a1 WITH FRAME TITLE TEXT-001.
+
+  SELECT-OPTIONS : s_werks FOR vbrp-werks OBLIGATORY
+  ,
+                   s_vbeln FOR vbrp-vbeln,
+                   s_fkdat FOR vbrK-fkdat OBLIGATORY,
+                   s_fkart FOR vbrk-fkart DEFAULT 'ZF2',
+                   s_kunrg FOR vbrk-kunrg .
+SELECTION-SCREEN: END OF BLOCK a1.
+
+SELECTION-SCREEN: BEGIN OF BLOCK a2 WITH FRAME TITLE TEXT-002.
+  PARAMETERS: p_file TYPE string."OBLIGATORY.
+  PARAMETERS: p_dest TYPE string . "OBLIGATORY.
+
+  PARAMETERS : p_cbox AS CHECKBOX DEFAULT 'X'.
+
+SELECTION-SCREEN: END OF BLOCK a2.
+
+INITIALIZATION.
+
+  SELECT Low FROM tvarvc INTO TABLE @DATA(it_tvarvc) WHERE name = 'ZTAFE_DELIVERY_LOCATION'.
+
+  LOOP AT it_tvarvc INTO DATA(wa_tvarc).
+    s_kunrg-sign = 'I'.
+    s_kunrg-option = 'EQ'.
+    s_kunrg-low = wa_tvarc-low.
+    APPEND s_kunrg.
+  ENDLOOP.
+*AT SELECTION-SCREEN.
+*  if p_create is NOT INITIAL.
+*  IF s_werks IS INITIAL.
+*    MESSAGE 'Kindly Fill The Plant' TYPE 'E'.
+*  ENDIF.
+*  If s_fkdat is INITIAL.
+*    MESSAGE 'Kindly Fill The Document Date' TYPE 'E'.
+*    ENDIF.
+*    ENDIF.
+*
+*AT SELECTION-SCREEN OUTPUT.
+*
+*LOOP AT SCREEN.
+*
+*IF p_cancel EQ 'X'.
+*
+*IF screen-name CS 'S_WERKS'.
+*screen-input = 0.
+*ELSEIF screen-name CS 'S_VBELN'.
+*screen-input = 1. " Enable the field S_CARRID
+*ELSEIF screen-name CS 'S_FKDAT'.
+*  screen-input = 0.
+*ELSEIF screen-name CS 'S_FKART'.
+*  screen-input = 0.
+*ELSEIF screen-name CS 'S_KUNRG'.
+*  screen-input = 0.
+*ELSEIF screen-name CS 'P_FILE'.
+*  screen-input = 0.
+*ELSEIF screen-name CS 'P_DEST'.
+*  screen-input = 0.
+*ELSEIF screen-name CS 'P_CBOX'.
+*  screen-input = 1.
+*ENDIF.
+*MODIFY SCREEN.
+*ELSEIF p_create EQ 'X'.
+*  IF screen-name CS 'S_WERKS'.
+*screen-input = 1.
+*ELSEIF screen-name CS 'S_VBELN'.
+*screen-input = 1. " Enable the field S_CARRID
+*ELSEIF screen-name CS 'S_FKDAT'.
+*  screen-input = 1.
+*ELSEIF screen-name CS 'S_FKART'.
+*  screen-input = 1.
+*ELSEIF screen-name CS 'S_KUNRG'.
+*  screen-input = 1.
+*ELSEIF screen-name CS 'P_FILE'.
+*  screen-input = 1.
+*ELSEIF screen-name CS 'P_DEST'.
+*  screen-input = 1.
+*ELSEIF screen-name CS 'P_CBOX'.
+*  screen-input = 1.
+*ENDIF.
+*MODIFY SCREEN.
+*ENDIF.
+*ENDLOOP.
+
+
+
+AT SELECTION-SCREEN ON VALUE-REQUEST FOR p_file.
+
+
+  CALL METHOD cl_gui_frontend_services=>file_open_dialog
+    CHANGING
+      file_table = file_table1
+      rc         = rc1.
+
+  IF sy-subrc <> 0.
+    MESSAGE ID sy-msgid TYPE sy-msgty NUMBER sy-msgno
+               WITH sy-msgv1 sy-msgv2 sy-msgv3 sy-msgv4.
+  ENDIF.
+
+  READ TABLE file_table1 INTO lx_wa1 INDEX 1.
+  p_file = lx_wa1.
+
+
+AT SELECTION-SCREEN ON VALUE-REQUEST FOR p_dest.
+  CALL METHOD cl_gui_frontend_services=>file_open_dialog
+    CHANGING
+      file_table = file_table
+      rc         = rc.
+
+  IF sy-subrc <> 0.
+    MESSAGE ID sy-msgid TYPE sy-msgty NUMBER sy-msgno
+               WITH sy-msgv1 sy-msgv2 sy-msgv3 sy-msgv4.
+  ENDIF.
+
+  READ TABLE file_table INTO lx_wa INDEX 1.
+  p_dest = lx_wa.
