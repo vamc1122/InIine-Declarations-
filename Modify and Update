@@ -1,0 +1,26 @@
+TYPES : BEGIN OF ty_post,
+          zrbukrs     TYPE acdoca-rbukrs,
+          zkunnr      TYPE acdoca-kunnr,
+          tcsamt      TYPE acdoca-wsl,
+          ztcs_doc    TYPE ztcs_update-ztcs_doc,
+          ztcs_postdt TYPE ztcs_update-ZBUDAT,
+          zpost_stat  TYPE ztcs_update-zpost_stat,
+          zpost_desc(30)  TYPE c,
+        END OF ty_post.
+        DATA : it_ztcs  TYPE TABLE OF ztcs_update,
+       wa_ztcs  TYPE ztcs_update.
+
+DATA : it_post  TYPE TABLE OF ty_post,
+       wa_post  TYPE ty_post,
+       it_final TYPE TABLE OF ty_post.
+       
+       
+""internal table modify
+        MODIFY it_post FROM wa_post TRANSPORTING zpost_desc ztcs_postdt  zpost_stat ztcs_doc WHERE zkunnr = wa_post-zkunnr.
+        
+"" custom table update 
+      UPDATE ztcs_update set zpost_stat = wa_post-zpost_stat WHERE zkunnr = wa_post-zkunnr.
+
+      IF sy-subrc = 0.
+        COMMIT WORK AND WAIT.
+      ENDIF.
